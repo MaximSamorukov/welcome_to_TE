@@ -1,6 +1,16 @@
 import { useState } from "react";
 
-export const Block1 = ({ mouseEnterCallbak, imgSrc, imgAlt }) => {
+const tagTypes = {
+  img: ({ imgAlt, imgSrc }) => <img src={imgSrc} alt={imgAlt} />,
+  text: ({ content }) => <p>{content}</p>,
+  address: ({ userData }) => (
+    <address>
+      country: {userData.country}, street: {userData.street}
+    </address>
+  ),
+}
+
+export const Block = ({ mouseEnterCallbak, type, ...props }) => {
   const [isActive, setActive] = useState(false);
 
   const mouseEnterHandler = () => {
@@ -10,39 +20,37 @@ export const Block1 = ({ mouseEnterCallbak, imgSrc, imgAlt }) => {
 
   return (
     <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <img src={imgSrc} alt={imgAlt} />
+      {tagTypes[type](props)}
     </div>
   );
 };
 
-export const Block2 = ({ mouseEnterCallbak, content }) => {
-  const [isActive, setActive] = useState(false);
-
-  const mouseEnterHandler = () => {
-    setActive(true);
-    mouseEnterCallbak();
-  };
-
+function App() {
   return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <p>{content}</p>
-    </div>
+    <Fragment>
+      <Block
+        type='img'
+        mouseEnterCallbak={() => console.log("hi from Block1")}
+        imgSrc="https://ohmylook.ua/files/products/42504.290x484.JPG?ce7d3c50d2e66b146f8711dd9eb7af35"
+        imgAlt="my picture"
+      />
+      <Block
+        type='text'
+        mouseEnterCallbak={() => console.log("hi from Block 2")}
+        content="Magdalena"
+      />
+      <Block
+        type='address'
+        mouseEnterCallbak={() => console.log("hi from Block 3")}
+        userData={{ country: "USA", street: "Maskavas" }}
+      />
+    </Fragment>
   );
-};
+}
 
-export const Block3 = ({ mouseEnterCallbak, userData }) => {
-  const [isActive, setActive] = useState(false);
-
-  const mouseEnterHandler = () => {
-    setActive(true);
-    mouseEnterCallbak();
-  };
-
-  return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <address>
-        country: {userData.country}, street: {userData.street}
-      </address>
-    </div>
-  );
-};
+ReactDOM.render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+  document.getElementById("root")
+);
